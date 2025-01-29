@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import Settings
 from scenes.menu_scene import MenuScene
+from scenes.game_scene import GameScene
 
 class Game:
     def __init__(self):
@@ -11,7 +12,8 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.scenes = {
-            'menu': MenuScene(self)
+            'menu': MenuScene(self),
+            'game': GameScene(self)
         }
 
         self.current_scene =  self.scenes['menu']

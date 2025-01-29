@@ -3,9 +3,9 @@ import os
 
 # Domyślne ustawienia gry
 DEFAULT_SETTINGS = {
-    'SCREEN_WIDTH': 1280,
-    'SCREEN_HEIGHT': 720,
-    'RESOLUTION': (1280, 720),
+    'SCREEN_WIDTH': 1920,
+    'SCREEN_HEIGHT': 1080,
+    'RESOLUTION': (1920, 1080),
     'FPS': 60
 }
 

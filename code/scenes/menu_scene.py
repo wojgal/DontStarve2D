@@ -1,11 +1,10 @@
 import pygame as pg
-from scenes.base_scene import BaseScene
 from constants import colors
 from ui.text import draw_text
 
-class MenuScene(BaseScene):
+class MenuScene:
     def __init__(self, game):
-        super().__init__(game)
+        self.game = game
         # Opcje, (nazwa, scena)
         self.options = [
             ('Nowa Gra', 'game'),
