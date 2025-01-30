@@ -1,10 +1,10 @@
 import pygame as pg
 from constants import colors
-from constants import fonts
+from constants.paths import FONT_PATHS
 
 def draw_text(screen, text, x, y, size=24, color=colors.WHITE):
     '''Rysowanie tekstu na ekranie'''
-    font = pg.font.Font(fonts.FONT_PATH, size)
+    font = pg.font.Font(FONT_PATHS['main'], size)
     text_surface = font.render(text, True, color)
 
     if x == 'center':
