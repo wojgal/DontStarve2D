@@ -3,47 +3,58 @@ from constants.paths import TEXTURE_PATHS, SPRITE_SHEET_PATHS
 
 texture_cache = {}
 
-def load_texture(path, size=None):
-    '''Wczytuje grafikę z pliku'''
-    image = pg.image.load(path).convert_alpha()
-
-    if size:
-        image = pg.transform.scale(image, size)
-
-    return image
+pg.display.init()
+pg.display.set_mode(size=(1, 1), flags=pg.HIDDEN)
 
 
-def get_texture(name, size=None):
-    '''Pobiera grafikę z cache lub ładuje, jeśli jeszcze jej tam nie ma'''
+def load_texture_file(path: str):
+    texture = pg.image.load(path).convert_alpha()
+
+    return texture
+
+
+def get_texture(name: str, size: tuple=(64, 64)):
     path = TEXTURE_PATHS.get(name)
 
     if not path:
         raise ValueError(f'Nie znaleziono tekstury "{name}"')
     
-    if path not in texture_cache:
-        texture_cache[path] = load_texture(path, size)
+    if name not in texture_cache:
+        texture_cache[name] = load_texture_file(path)
 
-    return texture_cache[path]
+    texture = texture_cache[name]
 
+    if size:
+        texture = pg.transform.scale(texture, size)
 
-
-
-#TODO TUTAJ ZROBIL SIE SYF Z TYM SPRITE SHEET OGARNAC TO JUTRO
-
-def load_sprite_sheet():
-    pass
+    return texture
 
 
-def get_texture_from_sprite_sheet():
-    pass
+def get_sprites(sheet_name, sprite_name, size: tuple=(64, 64)):
+    sheet_info = SPRITE_SHEET_PATHS.get(sheet_name)
 
-def get_sprite_sheet(name):
-    path = SPRITE_SHEET_PATHS.get(name)
-
-    if not path:
-        raise ValueError(f'Nie znaleziono tekstury (sprite) "{name}"')
+    if not sheet_info:
+        raise ValueError(f'Nie znaleziono sprite sheet "{sheet_name}"')
     
-    if path not in texture_cache:
-        texture_cache[path] = load_sprite_sheet(path)
+    path = sheet_info.get('path')
+    
+    if sheet_name not in texture_cache:
+        texture_cache[sheet_name] = load_texture_file(path)
 
-    return texture_cache[path]
+    sheet = texture_cache[sheet_name]
+    frame_width, frame_height, num_frames, row = sheet_info.get(sprite_name)
+    sprites = []
+
+    for x in range(num_frames):
+        frame = sheet.subsurface((x * frame_width, row * frame_height, frame_width, frame_height))
+
+        if size:
+            frame = pg.transform.scale(frame, size)
+
+        sprites.append(frame)
+
+    return sprites
+
+
+    
+

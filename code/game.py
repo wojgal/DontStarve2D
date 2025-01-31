@@ -30,6 +30,7 @@ class Game:
 
     def run(self):
         while self.running:
+            dt = self.clock.tick(self.settings.get('FPS'))
             events = pg.event.get()
 
             for event in events:
@@ -37,11 +38,10 @@ class Game:
                     self.running = False
                     
             self.current_scene.handle_events(events)
-            self.current_scene.update()
+            self.current_scene.update(dt)
             self.current_scene.draw(self.screen)
 
             pg.display.update()
-            self.clock.tick(self.settings.get('FPS'))
 
 
         pg.quit()

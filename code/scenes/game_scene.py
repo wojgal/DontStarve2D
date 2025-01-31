@@ -8,7 +8,7 @@ class GameScene:
         self.game = game
 
         self.world = World()
-        self.player = Player(400, 400, 64, 64)
+        self.player = Player(384, 384, 64, 64, self.world)
 
 
     def handle_events(self, events):
@@ -18,8 +18,8 @@ class GameScene:
         for event in events:
             pass
 
-    def update(self):
-        pass
+    def update(self, dt):
+        self.player.update(dt)
 
     def draw(self, screen):
         screen.fill(colors.BLACK)

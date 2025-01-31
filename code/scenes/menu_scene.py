@@ -34,8 +34,9 @@ class MenuScene:
                     self.game.change_scene(option_scene)
 
 
-    def update(self):
+    def update(self, dt):
         pass
+
 
     def draw(self, screen):
         screen.fill(colors.BLACK)
