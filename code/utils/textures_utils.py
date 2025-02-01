@@ -30,7 +30,7 @@ def get_texture(name: str, size: tuple=(64, 64)):
     return texture
 
 
-def get_sprites(sheet_name, sprite_name, size: tuple=(64, 64)):
+def get_sprites(sheet_name: str, sprite_name: str, size: tuple=(64, 64)):
     sheet_info = SPRITE_SHEET_PATHS.get(sheet_name)
 
     if not sheet_info:
@@ -42,7 +42,7 @@ def get_sprites(sheet_name, sprite_name, size: tuple=(64, 64)):
         texture_cache[sheet_name] = load_texture_file(path)
 
     sheet = texture_cache[sheet_name]
-    frame_width, frame_height, num_frames, row = sheet_info.get(sprite_name)
+    frame_width, frame_height, num_frames, row, flip_vert = sheet_info.get(sprite_name)
     sprites = []
 
     for x in range(num_frames):
@@ -50,6 +50,9 @@ def get_sprites(sheet_name, sprite_name, size: tuple=(64, 64)):
 
         if size:
             frame = pg.transform.scale(frame, size)
+
+        if flip_vert:
+            frame = pg.transform.flip(frame, flip_x=flip_vert, flip_y=False)
 
         sprites.append(frame)
 

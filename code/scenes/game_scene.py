@@ -13,10 +13,14 @@ class GameScene:
 
     def handle_events(self, events):
         keys = pg.key.get_pressed()
-        self.player.handle_input(keys)
 
         for event in events:
-            pass
+            if event.type == pg.KEYDOWN:
+
+                if event.key == pg.K_ESCAPE:
+                    self.game.change_scene('menu')
+
+        self.player.handle_input(keys)
 
     def update(self, dt):
         self.player.update(dt)

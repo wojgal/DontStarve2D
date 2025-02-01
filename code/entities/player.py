@@ -4,7 +4,6 @@ from constants.tiles import TILE_SIZE
 from constants.controls import INPUT_MAPPING
 from utils.animation import Animation
 from utils.textures_utils import get_sprites
-from math import sqrt
 
 class Player:
     def __init__(self, x, y, width, height, world):
@@ -12,23 +11,56 @@ class Player:
         self.world = world
 
         self.speed = 4
-        self.health = 100
+        self.health = 10
         self.action_timer = 0
         self.state = 'idle'
+        self.direction = 'right'
 
         self.animations = {
-            'walk': Animation(get_sprites(sheet_name='character', sprite_name='walk', size=(96, 96)), frame_duration=150),
-            'idle': Animation(get_sprites(sheet_name='character', sprite_name='idle1', size=(96, 96)), frame_duration=1000),
-            'dead': Animation(get_sprites(sheet_name='character', sprite_name='dead', size=(96, 96)), frame_duration=300),
-            'attack': Animation(get_sprites(sheet_name='character', sprite_name='attack', size=(96, 96)), frame_duration=100)
+            'idle': {
+                'down': Animation(get_sprites('player', 'idle_down'), frame_duration=175),
+                'right': Animation(get_sprites('player', 'idle_right'), frame_duration=175),
+                'up': Animation(get_sprites('player', 'idle_up'), frame_duration=175),
+                'left': Animation(get_sprites('player', 'idle_left'), frame_duration=175)             
+            },
+            
+            'move': {
+                'down': Animation(get_sprites('player', 'move_down'), frame_duration=125),
+                'right': Animation(get_sprites('player', 'move_right'), frame_duration=125),
+                'up': Animation(get_sprites('player', 'move_up'), frame_duration=125),
+                'left': Animation(get_sprites('player', 'move_left'), frame_duration=125)
+            },
+
+            'attack': {
+                'down': Animation(get_sprites('player', 'attack_down'), frame_duration=125),
+                'right': Animation(get_sprites('player', 'attack_right'), frame_duration=125),
+                'up': Animation(get_sprites('player', 'attack_up'), frame_duration=125),
+                'left': Animation(get_sprites('player', 'attack_left'), frame_duration=125),
+            }
         }
 
+    def check_move_on_tiles(self, tiles_cords):
+        for x, y in tiles_cords:
+            tile = self.world.get_tile(x, y)
+
+            if tile is None or not tile.walkable:
+                return False
+            
+        return True
+
+
+    def check_no_collision_with_objects(self, tiles_cords):
+        for x, y in tiles_cords:
+            object = self.world.get_object_at(x * TILE_SIZE, y * TILE_SIZE)
+
+            if object is not None and not object.walkable:
+                return False
+            
+        return True
 
 
     def can_move(self, new_x, new_y):
         '''Sprawdza, czy gracz moze wejsc na dane kafelki'''
-        map = self.world.get_map()
-
         # wszystkie mozliwe kafelki na ktorych moze znalezc sie gracz
         tiles_cords = [
             [new_x // TILE_SIZE, new_y // TILE_SIZE],
@@ -37,18 +69,12 @@ class Player:
             [(new_x + self.rect.width - 1) // TILE_SIZE, (new_y + self.rect.height - 1) // TILE_SIZE]
         ]
 
-        tiles_objects = []
+        if not self.check_move_on_tiles(tiles_cords):
+            return False
+        
+        if not self.check_no_collision_with_objects(tiles_cords):
+            return False
 
-        for x, y in tiles_cords:
-            tiles_objects.append(map.get_tile(x, y))
-
-        for tile in tiles_objects:
-            if tile is None:
-                return False
-            
-            if not tile.walkable:
-                return False
-            
         return True
 
 
@@ -70,34 +96,39 @@ class Player:
         dx, dy = 0, 0
 
         if any(keys[key] for key in INPUT_MAPPING['move_up']):
+            self.direction = 'up'
             dy -= 1
 
         if any(keys[key] for key in INPUT_MAPPING['move_down']):
+            self.direction = 'down'
             dy += 1
 
         if any(keys[key] for key in INPUT_MAPPING['move_left']):
+            self.direction = 'left'
             dx -= 1
 
         if any(keys[key] for key in INPUT_MAPPING['move_right']):
+            self.direction = 'right'
             dx += 1
 
         if dx or dy:
             self.move(dx, dy)
-            return 'walk'
+            return 'move'
         
         return 'idle'
 
 
     def handle_attack(self, keys):
         '''Obsluguje atak gracza'''
-        if self.action_timer <= 0 and any(keys[key] for key in INPUT_MAPPING['attack']):
-            self.action_timer = self.animations['attack'].get_timer()
+        if any(keys[key] for key in INPUT_MAPPING['attack']):
+            self.action_timer = self.animations['attack'][self.direction].get_timer()
             return 'attack'
         
         return 'idle'
 
         
     def handle_input(self, keys):
+        # Dzięki temu mamy pewność, że nie jest wykonywana żadna akcja w dalszej części kodu
         if self.action_timer > 0:
             return 
         
@@ -113,20 +144,16 @@ class Player:
         if self.action_timer > 0:
             self.action_timer -= dt
 
-        if self.action_timer <= 0:
-            self.action_timer = 0
-            self.state = 'idle'
+            if self.action_timer <= 0:
+                self.action_timer = 0
+                self.animations[self.state][self.direction].reset_animation()
+                self.state = 'idle'
+                self.animations[self.state][self.direction].reset_animation()
 
-        # for name, animation in self.animations.items():
-        #     if name == self.state:
-        #         continue
-
-        #     animation.reset_animation()
-
-        self.animations[self.state].update(dt)
+        self.animations[self.state][self.direction].update(dt)
     
 
     def draw(self, screen):
-        screen.blit(self.animations[self.state].get_current_frame(), self.rect)
+        screen.blit(self.animations[self.state][self.direction].get_current_frame(), self.rect)
         #pg.draw.rect(screen, colors.RED, self.rect)
 

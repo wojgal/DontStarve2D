@@ -24,4 +24,4 @@ class Animation:
 
 
     def get_timer(self) -> int:
-        return self.frame_duration * (self.num_frames + 1)
+        return self.frame_duration * self.num_frames

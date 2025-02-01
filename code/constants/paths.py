@@ -1,20 +1,29 @@
 TEXTURE_PATHS = {
     'grass': 'assets/textures/grass.png',
-    'water': 'assets/textures/water.png'
+    'grass_leaves1': 'assets/textures/grass_leaves1.png',
+    'grass_leaves2': 'assets/textures/grass_leaves2.png',
+    'grass_leaves3': 'assets/textures/grass_leaves3.png',
+    'water': 'assets/textures/water.png',
+    'tree': 'assets/textures/tree.png'
 }
 SPRITE_SHEET_PATHS = {
-    'character': {
-        'path': 'assets/sprites/character.png',
-        # 'name': (frame_width, frame_height, number_of_frames, row)
-        'idle1': (32, 32, 2, 0),
-        'idle2': (32, 32, 2, 1),
-        'walk': (32, 32, 4, 2),
-        'sprint': (32, 32, 8, 3),
-        '__1': (32, 32, 6, 4),
-        'jump': (32, 32, 8, 5),
-        'dead': (32, 32, 3, 6),
-        '__2': (32, 32, 8, 7),
-        'attack': (32, 32, 8, 8)
+    'player': {
+        'path': 'assets/sprites/player.png',
+        # 'name': (frame_width, frame_height, number_of_frames, row, flip_vertical)
+        'idle_down': (32, 32, 6, 0, False),
+        'idle_right': (32, 32, 6, 1, False),
+        'idle_up': (32, 32, 6, 2, False),
+        'idle_left': (32, 32, 6, 1, True),
+
+        'move_down': (32, 32, 6, 3, False),
+        'move_right': (32, 32, 6, 4, False),
+        'move_up': (32, 32, 6, 5, False),
+        'move_left': (32, 32, 6, 4, True),
+
+        'attack_down': (32, 32, 4, 6, False),
+        'attack_right': (32, 32, 4, 7, False),
+        'attack_up': (32, 32, 4, 8, False),
+        'attack_left': (32, 32, 4, 7, True)
     }
 }
 

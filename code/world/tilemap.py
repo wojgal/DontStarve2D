@@ -3,10 +3,9 @@ from perlin_noise import PerlinNoise
 from numpy.random import randint
 
 class TileMap:
-    def __init__(self, world_size: int):
-        self.world_size = world_size
-
-        self.noise = PerlinNoise(octaves=4, seed=randint(1000))
+    def __init__(self, size: int, noise):
+        self.size = size
+        self.noise = noise
         self.tiles = self.generate_map()
 
 
@@ -14,15 +13,17 @@ class TileMap:
         '''Generowanie mapy bazujac na szumie Perlina'''
         tiles = []
 
-        for y in range(self.world_size):
+        for y in range(self.size):
             row = []
-            for x in range(self.world_size):
-                perlin_value = self.noise([x / self.world_size, y / self.world_size])
+            for x in range(self.size):
+                perlin_value = self.noise([x / self.size, y / self.size])
                 normalized_value = (perlin_value + 1) / 2
                 
+                # Woda
                 if 0 <= normalized_value < 0.4:
                     tile = Tile(type='water', x=x, y=y)
 
+                # Trawa
                 elif 0.4 <= normalized_value <=1:
                     tile = Tile(type='grass', x=x, y=y)
 
@@ -43,11 +44,12 @@ class TileMap:
     def get_tile(self, x: int, y: int):
         '''Zwraca obiekt kafelka na danej pozycji'''
         # x jest poza zakresem
-        if not 0 <= x < self.world_size:
+        if not 0 <= x < self.size:
             return None
         
         # y jest poza zakresem
-        if not 0 <= y < self.world_size:
+        if not 0 <= y < self.size:
             return None
         
         return self.tiles[y][x]
+    
