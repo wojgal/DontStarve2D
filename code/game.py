@@ -25,6 +25,10 @@ class Game:
         if scene_name == 'quit':
             self.running = False
             return
+        
+        # NA RAZIE NA MOJE POTRZEBY RESETUJEMY SWIAT
+        if scene_name == 'game':
+            self.scenes['game'] = GameScene(self)
 
         self.current_scene = self.scenes[scene_name]
 

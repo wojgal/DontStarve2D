@@ -1,17 +1,22 @@
 import pygame as pg
-from constants import colors
+from systems.inventory import Inventory
 from constants.tiles import TILE_SIZE
 from constants.controls import INPUT_MAPPING
+from constants.player import PLAYER_HEALTH, PLAYER_SPEED
 from utils.animation import Animation
 from utils.textures_utils import get_sprites
 
-class Player:
-    def __init__(self, x, y, width, height, world):
-        self.rect = pg.Rect(x, y, width, height)
-        self.world = world
+from constants import colors
 
-        self.speed = 4
-        self.health = 10
+class Player(pg.sprite.Sprite):
+    def __init__(self, x, y, world):
+        super().__init__()
+
+        self.world = world
+        self.inventory = Inventory()
+
+        self.speed = PLAYER_SPEED
+        self.health = PLAYER_HEALTH
         self.action_timer = 0
         self.state = 'idle'
         self.direction = 'right'
@@ -39,11 +44,18 @@ class Player:
             }
         }
 
+        self.image = self.animations[self.state][self.direction].get_current_frame()
+        self.rect = self.image.get_rect(topleft=(x * TILE_SIZE, y * TILE_SIZE))
+
+
     def check_move_on_tiles(self, tiles_cords):
         for x, y in tiles_cords:
             tile = self.world.get_tile(x, y)
 
-            if tile is None or not tile.walkable:
+            if tile is None:
+                return False
+            
+            if tile.walkable is False:
                 return False
             
         return True
@@ -51,9 +63,12 @@ class Player:
 
     def check_no_collision_with_objects(self, tiles_cords):
         for x, y in tiles_cords:
-            object = self.world.get_object_at(x * TILE_SIZE, y * TILE_SIZE)
+            object = self.world.get_object_at(x, y)
 
-            if object is not None and not object.walkable:
+            if object is None:
+                continue
+
+            if object.walkable is False:
                 return False
             
         return True
@@ -69,10 +84,10 @@ class Player:
             [(new_x + self.rect.width - 1) // TILE_SIZE, (new_y + self.rect.height - 1) // TILE_SIZE]
         ]
 
-        if not self.check_move_on_tiles(tiles_cords):
+        if self.check_move_on_tiles(tiles_cords) is False:
             return False
         
-        if not self.check_no_collision_with_objects(tiles_cords):
+        if self.check_no_collision_with_objects(tiles_cords) is False:
             return False
 
         return True
@@ -116,12 +131,47 @@ class Player:
             return 'move'
         
         return 'idle'
+    
+
+    def get_facing_tile_cords(self):
+        tile_x, tile_y = self.rect.center
+        tile_x, tile_y = tile_x // TILE_SIZE, tile_y // TILE_SIZE
+
+        if self.direction == 'up':
+            tile_y -= 1
+        
+        elif self.direction == 'down':
+            tile_y += 1
+
+        elif self.direction == 'left':
+            tile_x -= 1
+        
+        elif self.direction == 'right':
+            tile_x += 1
+
+        return tile_x, tile_y
+    
+
+    def get_facing_object(self):
+        tile_x, tile_y = self.get_facing_tile_cords()
+
+        return self.world.get_object_at(tile_x, tile_y)
 
 
     def handle_attack(self, keys):
         '''Obsluguje atak gracza'''
         if any(keys[key] for key in INPUT_MAPPING['attack']):
             self.action_timer = self.animations['attack'][self.direction].get_timer()
+
+            object = self.get_facing_object()
+
+            if object and hasattr(object, 'interact'):
+                result, drop = object.interact()
+
+                if result == 'destroy':
+                    self.world.remove_object(object)
+                    self.inventory.add_item(drop)
+
             return 'attack'
         
         return 'idle'
@@ -132,12 +182,25 @@ class Player:
         if self.action_timer > 0:
             return 
         
-        state = self.handle_attack(keys)
+        new_state = self.handle_attack(keys)
 
-        if state == 'idle':
-            state = self.handle_movement(keys)
+        if new_state == 'idle':
+            new_state = self.handle_movement(keys)
 
-        self.state = state
+        self.state = new_state
+
+
+    def handle_events(self, events):
+        keys = pg.key.get_pressed()
+
+        for event in events:
+            if event.type == pg.KEYDOWN:
+
+                if event.key in INPUT_MAPPING['inventory']:
+                    self.inventory.toggle_open()
+
+        if not self.inventory.is_open:
+            self.handle_input(keys)
 
 
     def update(self, dt):
@@ -149,11 +212,25 @@ class Player:
                 self.animations[self.state][self.direction].reset_animation()
                 self.state = 'idle'
                 self.animations[self.state][self.direction].reset_animation()
-
+                
         self.animations[self.state][self.direction].update(dt)
+        self.image = self.animations[self.state][self.direction].get_current_frame()
     
 
+    def draw_facing_tile(self, screen):
+        tile_x, tile_y = self.get_facing_tile_cords()
+
+        highlight_surface = pg.Surface((TILE_SIZE, TILE_SIZE), pg.SRCALPHA)
+        highlight_surface.fill((255, 255, 255, 25))
+
+        screen.blit(highlight_surface, (tile_x * TILE_SIZE, tile_y * TILE_SIZE))
+
+
     def draw(self, screen):
-        screen.blit(self.animations[self.state][self.direction].get_current_frame(), self.rect)
         #pg.draw.rect(screen, colors.RED, self.rect)
+        self.draw_facing_tile(screen)
+        screen.blit(self.image, self.rect)
+        self.inventory.draw(screen)
+
+
 

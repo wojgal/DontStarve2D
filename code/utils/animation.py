@@ -21,6 +21,7 @@ class Animation:
 
     def reset_animation(self):
         self.current_frame = 0
+        self.time_elapsed = 0
 
 
     def get_timer(self) -> int:

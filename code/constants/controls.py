@@ -6,5 +6,6 @@ INPUT_MAPPING = {
     'move_left': [pg.K_LEFT, pg.K_a],
     'move_right': [pg.K_RIGHT, pg.K_d],
     'attack': [pg.K_SPACE],
-    'interact': [pg.K_e]
+    'interact': [pg.K_e],
+    'inventory': [pg.K_i]
 }

@@ -1,5 +1,4 @@
 from world.tile import Tile
-from perlin_noise import PerlinNoise
 from numpy.random import randint
 
 class TileMap:
@@ -44,11 +43,11 @@ class TileMap:
     def get_tile(self, x: int, y: int):
         '''Zwraca obiekt kafelka na danej pozycji'''
         # x jest poza zakresem
-        if not 0 <= x < self.size:
+        if 0 <= x < self.size is False:
             return None
         
         # y jest poza zakresem
-        if not 0 <= y < self.size:
+        if 0 <= y < self.size is False:
             return None
         
         return self.tiles[y][x]

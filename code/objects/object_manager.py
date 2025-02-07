@@ -6,10 +6,10 @@ class ObjectManager:
     def __init__(self, tilemap, noise):
         self.tilemap = tilemap
         self.noise = noise
-        self.objects = []
+        self.objects = {}
 
         self.generate_objects()
-        
+    
 
     def generate_objects(self):
         '''Generuje obiekty na mapie (np. drzewo)'''
@@ -17,26 +17,26 @@ class ObjectManager:
 
         for y in range(world_size):
             for x in range(world_size):
+                new_object = None
                 perlin_value = self.noise([x / world_size, y / world_size])
                 normalized_value = (perlin_value + 1) / 2
 
                 # Generowanie drzew
                 if normalized_value > OBJECTS_PARAMETERS['tree']['threshold'] and self.tilemap.get_tile(x, y).type == 'grass':
-                    self.objects.append(Tree(x * TILE_SIZE, y * TILE_SIZE))
+                    new_object = Tree(x, y)
+
+                if new_object is not None:
+                    self.objects[(x, y)] = new_object
 
 
     def get_object_at(self, x, y):
-        '''Zwraca obiekt na danej pozycji (lub None)
-            Pozycja to konkretne piksele obiektu, nie grid!'''
-        for object in self.objects:
-            if object.rect.collidepoint(x, y):
-                return object
-            
-        return None
+        '''Zwraca obiekt na danym kafelku (lub None)'''
+        #print(self.objects[(x, y)].type)
+        return self.objects.get((x, y))
 
 
     def remove_object(self, object):
-        self.objects.remove(object)
+        self.objects.pop((object.rect.x // TILE_SIZE, object.rect.y // TILE_SIZE))
 
 
     def update(self):
@@ -44,5 +44,5 @@ class ObjectManager:
 
 
     def draw(self, screen):
-        for object in self.objects:
+        for object in self.objects.values():
             object.draw(screen)

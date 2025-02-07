@@ -6,7 +6,6 @@ from perlin_noise import PerlinNoise
 from objects.object_manager import ObjectManager
 
 WORLD_SIZE = 30
-TILE_SIZE = 64
 
 class World:
     def __init__(self):
