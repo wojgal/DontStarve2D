@@ -29,5 +29,8 @@ class Tree(pg.sprite.Sprite):
         return None, None
 
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
+    def draw(self, screen, offset_x, offset_y):
+        x = self.rect.x - offset_x
+        y = self.rect.y - offset_y
+
+        screen.blit(self.image, (x, y))

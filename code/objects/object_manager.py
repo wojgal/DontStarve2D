@@ -6,6 +6,7 @@ class ObjectManager:
     def __init__(self, tilemap, noise):
         self.tilemap = tilemap
         self.noise = noise
+        self.camera = None
         self.objects = {}
 
         self.generate_objects()
@@ -44,5 +45,14 @@ class ObjectManager:
 
 
     def draw(self, screen):
-        for object in self.objects.values():
-            object.draw(screen)
+        start_tile_x, start_tile_y, end_tile_x, end_tile_y = self.camera.get_tiles_range()
+        offset_x, offset_y = self.camera.get_offset()
+
+        for x in range(start_tile_x, end_tile_x):
+            for y in range(start_tile_y, end_tile_y):
+                object = self.get_object_at(x, y)
+
+                if object is None:
+                    continue
+
+                object.draw(screen, offset_x, offset_y)

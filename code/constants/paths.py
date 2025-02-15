@@ -5,7 +5,8 @@ TEXTURE_PATHS = {
     'grass_leaves3': 'assets/textures/grass_leaves3.png',
     'water': 'assets/textures/water.png',
     'tree': 'assets/textures/tree.png',
-    'inventory': 'assets/textures/inventory.png'
+    'inventory': 'assets/textures/inventory.png',
+    'wood': 'assets/textures/wood.png'
 }
 SPRITE_SHEET_PATHS = {
     'player': {

@@ -13,6 +13,7 @@ class Player(pg.sprite.Sprite):
         super().__init__()
 
         self.world = world
+        self.camera = None
         self.inventory = Inventory()
 
         self.speed = PLAYER_SPEED
@@ -46,6 +47,9 @@ class Player(pg.sprite.Sprite):
 
         self.image = self.animations[self.state][self.direction].get_current_frame()
         self.rect = self.image.get_rect(topleft=(x * TILE_SIZE, y * TILE_SIZE))
+
+    def set_cammera(self, camera):
+        self.camera = camera
 
 
     def check_move_on_tiles(self, tiles_cords):
@@ -223,13 +227,19 @@ class Player(pg.sprite.Sprite):
         highlight_surface = pg.Surface((TILE_SIZE, TILE_SIZE), pg.SRCALPHA)
         highlight_surface.fill((255, 255, 255, 25))
 
-        screen.blit(highlight_surface, (tile_x * TILE_SIZE, tile_y * TILE_SIZE))
+        offset_x, offset_y = self.camera.get_offset()
+
+        x = tile_x * TILE_SIZE - offset_x
+        y = tile_y * TILE_SIZE - offset_y
+
+        screen.blit(highlight_surface, (x, y))
 
 
     def draw(self, screen):
-        #pg.draw.rect(screen, colors.RED, self.rect)
         self.draw_facing_tile(screen)
-        screen.blit(self.image, self.rect)
+        player_screen_x = 1920 // 2 - TILE_SIZE // 2
+        player_screen_y = 1080 // 2 - TILE_SIZE // 2
+        screen.blit(self.image, (player_screen_x, player_screen_y))
         self.inventory.draw(screen)
 
 

@@ -2,9 +2,10 @@ from world.tile import Tile
 from numpy.random import randint
 
 class TileMap:
-    def __init__(self, size: int, noise):
+    def __init__(self, size, noise):
         self.size = size
         self.noise = noise
+        self.camera = None
         self.tiles = self.generate_map()
 
 
@@ -35,9 +36,13 @@ class TileMap:
 
     def draw(self, screen):
         '''Rysuje wszystkie kafelki na ekranie'''
-        for row in self.tiles:
-            for tile in row:
-                tile.draw(screen)
+        start_tile_x, start_tile_y, end_tile_x, end_tile_y = self.camera.get_tiles_range()
+        tile_offset_x, tile_offset_y = self.camera.get_offset()
+
+        for y in range(start_tile_y, end_tile_y):
+            for x in range(start_tile_x, end_tile_x):
+                tile = self.tiles[y][x]
+                tile.draw(screen, tile_offset_x, tile_offset_y)
 
 
     def get_tile(self, x: int, y: int):
@@ -49,6 +54,6 @@ class TileMap:
         # y jest poza zakresem
         if 0 <= y < self.size is False:
             return None
-        
+        print(x,y)
         return self.tiles[y][x]
     

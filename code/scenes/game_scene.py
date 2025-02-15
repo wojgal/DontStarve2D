@@ -1,14 +1,20 @@
 import pygame as pg
 from world.world import World
 from entities.player import Player
+from systems.camera import Camera
 from constants import colors
+from constants.world import WORLD_SIZE
 
 class GameScene:
     def __init__(self, game):
         self.game = game
 
         self.world = World()
-        self.player = Player(10, 10, self.world)
+        self.player = Player(WORLD_SIZE // 2, WORLD_SIZE // 2, self.world)
+        self.camera = Camera(self.player, self.game.settings.get('SCREEN_WIDTH'), self.game.settings.get('SCREEN_HEIGHT'))
+
+        self.world.set_camera(self.camera)
+        self.player.set_cammera(self.camera)
 
 
     def handle_events(self, events):
@@ -20,8 +26,11 @@ class GameScene:
 
         self.player.handle_events(events)
 
+
     def update(self, dt):
         self.player.update(dt)
+        self.world.update(dt)
+
 
     def draw(self, screen):
         screen.fill(colors.BLACK)

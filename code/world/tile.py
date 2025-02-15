@@ -13,6 +13,8 @@ class Tile:
         self.walkable = TILE_TYPES[self.type]['walkable']
         self.texture = TILE_TYPES[self.type]['texture']
 
-    def draw(self, screen):
+    def draw(self, screen, offset_x, offset_y):
         '''Rysuje kafelek na ekranie'''
-        screen.blit(self.texture, (self.x * self.size, self.y * self.size))
+        x = self.x * self.size - offset_x
+        y = self.y * self.size - offset_y
+        screen.blit(self.texture, (x, y))
