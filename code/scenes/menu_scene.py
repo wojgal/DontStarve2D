@@ -1,5 +1,6 @@
 import pygame as pg
-from constants import colors
+from constants.colors import BLACK, WHITE, RED
+from constants.scenes import GAME_SCENE, QUIT, SETTINGS_SCENE
 from ui.text import draw_text
 
 class MenuScene:
@@ -7,9 +8,9 @@ class MenuScene:
         self.game = game
         # Opcje, (nazwa, scena)
         self.options = [
-            ('Nowa Gra', 'game'),
-            ('Opcje', None),
-            ('Wyjdz', 'quit')
+            ('Nowa Gra', GAME_SCENE),
+            ('Opcje', SETTINGS_SCENE),
+            ('Wyjdz', QUIT)
         ]
         self.selected_option = 0
         self.font_size = 100
@@ -39,15 +40,15 @@ class MenuScene:
 
 
     def draw(self, screen):
-        screen.fill(colors.BLACK)
+        screen.fill(BLACK)
 
         for idx, option in enumerate(self.options):
             option_name, option_scene = option
 
             if idx == self.selected_option:
-                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=colors.RED)
+                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=RED)
             else:
-                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=colors.WHITE)
+                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=WHITE)
 
 
 

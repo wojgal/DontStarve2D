@@ -2,6 +2,8 @@ import pygame as pg
 from settings import Settings
 from scenes.menu_scene import MenuScene
 from scenes.game_scene import GameScene
+from scenes.settings_scene import SettingsScene
+from constants.scenes import GAME_SCENE, MENU_SCENE, QUIT, SETTINGS_SCENE
 
 class Game:
     def __init__(self):
@@ -12,23 +14,24 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.scenes = {
-            'menu': MenuScene(self),
-            'game': GameScene(self)
+            MENU_SCENE: MenuScene(self),
+            GAME_SCENE: GameScene(self),
+            SETTINGS_SCENE: SettingsScene(self)
         }
 
-        self.current_scene =  self.scenes['menu']
+        self.current_scene =  self.scenes[MENU_SCENE]
 
     def change_scene(self, scene_name):
         if scene_name is None:
             return
         
-        if scene_name == 'quit':
+        if scene_name == QUIT:
             self.running = False
             return
         
         # NA RAZIE NA MOJE POTRZEBY RESETUJEMY SWIAT
-        if scene_name == 'game':
-            self.scenes['game'] = GameScene(self)
+        if scene_name == GAME_SCENE:
+            self.scenes[GAME_SCENE] = GameScene(self)
 
         self.current_scene = self.scenes[scene_name]
 

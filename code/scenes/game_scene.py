@@ -4,6 +4,7 @@ from entities.player import Player
 from systems.camera import Camera
 from constants import colors
 from constants.world import WORLD_SIZE
+from constants.scenes import MENU_SCENE
 
 class GameScene:
     def __init__(self, game):
@@ -22,7 +23,7 @@ class GameScene:
             if event.type == pg.KEYDOWN:
 
                 if event.key == pg.K_ESCAPE:
-                    self.game.change_scene('menu')
+                    self.game.change_scene(MENU_SCENE)
 
         self.player.handle_events(events)
 

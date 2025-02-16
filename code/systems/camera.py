@@ -15,6 +15,7 @@ class Camera:
 
         return offset_x, offset_y
     
+    
     def get_tiles_offset(self):
         offset_x, offset_y = self.get_offset()
 
