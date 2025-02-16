@@ -6,10 +6,12 @@ from ui.text import draw_text
 class SettingsScene:
     def __init__(self, game):
         self.game = game
+        self.audio_manager = game.audio_manager
+        self.settings = game.settings
 
         self.options = [
-            ('Muzyka', None),
-            ('Dzwieki', None)
+            {'label': 'Muzyka', 'key': 'MUSIC_ENABLED', 'action': self.audio_manager.toggle_music},
+            {'label': 'Dzwieki', 'key': 'SFX_ENABLED', 'action': self.audio_manager.toggle_sfx}
         ]
 
         self.selected_option = 0
@@ -34,8 +36,9 @@ class SettingsScene:
                     pass
 
                 elif event.key in (pg.K_RETURN, pg.K_SPACE):
-                    option_name, option_action = self.options[self.selected_option]
-                    # Tutaj trzeba sprawdzic jak wykonac funkcje ktora sie znajduje w option action
+                    option = self.options[self.selected_option]
+                    new_state = option['action']()
+                    self.settings.set(option['key'], new_state)
 
                 elif event.key == pg.K_ESCAPE:
                     self.game.change_scene(MENU_SCENE)
@@ -44,14 +47,16 @@ class SettingsScene:
     def update(self, dt):
         pass
 
+
     def draw(self, screen):
         screen.fill(BLACK)
 
         for idx, option in enumerate(self.options):
-            option_name, option_action = option
+            state = self.settings.get(option['key'])
+            text = f'{option['label']}   {"ON" if state else "OFF"}'
 
             if idx == self.selected_option:
-                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=RED)
+                draw_text(screen=screen, text=text, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=RED)
             else:
-                draw_text(screen=screen, text=option_name, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=WHITE)
+                draw_text(screen=screen, text=text, x='center', y=100 + idx * self.text_spacing, size=self.font_size, color=WHITE)
 

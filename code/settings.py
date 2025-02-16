@@ -6,7 +6,11 @@ DEFAULT_SETTINGS = {
     'SCREEN_WIDTH': 1920,
     'SCREEN_HEIGHT': 1080,
     'RESOLUTION': (1920, 1080),
-    'FPS': 60
+    'FPS': 60,
+    'MUSIC_ENABLED': True,
+    'MUSIC_VOLUME': 0.5,
+    'SFX_ENABLED': True,
+    'SFX_VOLUME': 0.5
 }
 
 class Settings:

@@ -54,6 +54,6 @@ class TileMap:
         # y jest poza zakresem
         if 0 <= y < self.size is False:
             return None
-        print(x,y)
+        
         return self.tiles[y][x]
     

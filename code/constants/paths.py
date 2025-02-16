@@ -33,4 +33,10 @@ FONT_PATHS = {
     'main': 'assets/fonts/upheavtt.ttf'
 }
 
+MUSIC_PATHS = {
+    'music': 'assets/music/music1.ogg'
+}
+
+SFX_PATHS = {}
+
 

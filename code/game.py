@@ -3,12 +3,14 @@ from settings import Settings
 from scenes.menu_scene import MenuScene
 from scenes.game_scene import GameScene
 from scenes.settings_scene import SettingsScene
+from systems.audio import AudioManager
 from constants.scenes import GAME_SCENE, MENU_SCENE, QUIT, SETTINGS_SCENE
 
 class Game:
     def __init__(self):
         pg.init()
         self.settings = Settings()
+        self.audio_manager = AudioManager()
 
         self.screen = pg.display.set_mode(self.settings.get('RESOLUTION'))
         self.clock = pg.time.Clock()
@@ -20,6 +22,7 @@ class Game:
         }
 
         self.current_scene =  self.scenes[MENU_SCENE]
+
 
     def change_scene(self, scene_name):
         if scene_name is None:
@@ -34,6 +37,7 @@ class Game:
             self.scenes[GAME_SCENE] = GameScene(self)
 
         self.current_scene = self.scenes[scene_name]
+
 
     def run(self):
         while self.running:

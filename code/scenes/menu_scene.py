@@ -6,6 +6,9 @@ from ui.text import draw_text
 class MenuScene:
     def __init__(self, game):
         self.game = game
+        self.audio_manager = game.audio_manager
+        self.audio_manager.play_music('music')
+
         # Opcje, (nazwa, scena)
         self.options = [
             ('Nowa Gra', GAME_SCENE),
