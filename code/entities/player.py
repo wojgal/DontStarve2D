@@ -112,10 +112,6 @@ class Player(pg.sprite.Sprite):
 
         if self.can_move(self.rect.x, new_y):
             self.rect.y = new_y
-            moved = True
-
-        if moved:
-            self.audio_manager.play('walk')
 
 
     def handle_movement(self, keys):
