@@ -28,16 +28,18 @@ class Settings:
             except json.JSONDecodeError:
                 print('Błąd odczytu pliku z ustawieniami, używam domyślnych.')
 
+
     def save_settings(self):
         '''Zapisuje aktualne ustawienia do pliku.'''
         with open(self.filename, 'w') as file:
             json.dump(self.settings, file)
 
+
     def get(self, key):
         '''Pobiera wartość ustawienia o podanej nazwie.'''
         return self.settings.get(key, DEFAULT_SETTINGS.get(key))
     
+    
     def set(self, key, value):
         '''Ustawia wartość ustawienia o podanej nazwie.'''
         self.settings[key] = value
-        self.save_settings()
