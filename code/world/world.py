@@ -6,7 +6,8 @@ from perlin_noise import PerlinNoise
 from objects.object_manager import ObjectManager
 
 class World:
-    def __init__(self):
+    def __init__(self, audio_manager):
+        self.audio_manager = audio_manager
         self.camera = None
         self.noise = PerlinNoise(octaves=4, seed=randint(1000))
         self.tilemap = TileMap(WORLD_SIZE, self.noise)

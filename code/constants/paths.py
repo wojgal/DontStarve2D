@@ -30,13 +30,16 @@ SPRITE_SHEET_PATHS = {
 }
 
 FONT_PATHS = {
-    'main': 'assets/fonts/upheavtt.ttf'
+    'main': 'assets/fonts/upheavtt.ttf',
 }
 
 MUSIC_PATHS = {
-    'music': 'assets/music/music1.ogg'
+    'music': 'assets/music/music1.ogg',
 }
 
-SFX_PATHS = {}
+SFX_PATHS = {
+    'attack_sword': 'assets/sfx/attack_sword.wav',
+    'walk': 'assets/sfx/walk.wav',
+}
 
 

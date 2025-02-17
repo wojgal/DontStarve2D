@@ -9,11 +9,11 @@ from constants.scenes import MENU_SCENE
 class GameScene:
     def __init__(self, game):
         self.game = game
+        self.audio_manager = game.audio_manager
 
-        self.world = World()
+        self.world = World(self.audio_manager)
         self.player = Player(WORLD_SIZE // 2, WORLD_SIZE // 2, self.world)
         self.camera = Camera(self.player, self.game.settings.get('SCREEN_WIDTH'), self.game.settings.get('SCREEN_HEIGHT'))
-        self.audio_manager = game.audio_manager
 
         self.world.set_camera(self.camera)
         self.player.set_cammera(self.camera)

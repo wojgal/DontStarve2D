@@ -13,6 +13,7 @@ class Player(pg.sprite.Sprite):
         super().__init__()
 
         self.world = world
+        self.audio_manager = world.audio_manager
         self.camera = None
         self.inventory = Inventory()
 
@@ -50,6 +51,9 @@ class Player(pg.sprite.Sprite):
 
     def set_cammera(self, camera):
         self.camera = camera
+
+    def set_audio_manager(self, audio_manager):
+        self.audio_manager = audio_manager
 
 
     def check_move_on_tiles(self, tiles_cords):
@@ -108,6 +112,10 @@ class Player(pg.sprite.Sprite):
 
         if self.can_move(self.rect.x, new_y):
             self.rect.y = new_y
+            moved = True
+
+        if moved:
+            self.audio_manager.play('walk')
 
 
     def handle_movement(self, keys):
