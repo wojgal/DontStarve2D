@@ -2,28 +2,30 @@ import pygame as pg
 from constants.paths import MUSIC_PATHS, SFX_PATHS
 
 class AudioManager:
-    def __init__(self, music_volume=0.5, sfx_volume=0.5):
+    def __init__(self):
         pg.mixer.init()
-        self.music_volume = music_volume
-        self.music_enabled = True
-
-        self.sfx_volume = sfx_volume
-        self.sfx_enabled = True
         self.sfx = {}
-
 
         self.fade_ms = 1000
 
+    
+    def load_settings(self, settings):
+        self.music_enabled = settings.get('MUSIC_ENABLED')
+        self.music_volume = settings.get('MUSIC_VOLUME')
+
+        self.sfx_enabled = settings.get('SFX_ENABLED')
+        self.sfx_volume = settings.get('SFX_VOLUME')
+
 
     def play_music(self, music_name, loops=-1):
-        if not self.sfx_enabled:
-            return
-        
         if music_name in MUSIC_PATHS:
             pg.mixer.music.fadeout(self.fade_ms)
             pg.mixer.music.load(MUSIC_PATHS[music_name])
             pg.mixer.music.set_volume(self.music_volume)
             pg.mixer.music.play(loops=loops, fade_ms=self.fade_ms)
+
+        if not self.music_enabled:
+            pg.mixer.music.pause()
 
 
     def pause_music(self):

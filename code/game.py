@@ -10,11 +10,14 @@ class Game:
     def __init__(self):
         pg.init()
         self.settings = Settings()
+
         self.audio_manager = AudioManager()
+        self.audio_manager.load_settings(self.settings)
 
         self.screen = pg.display.set_mode(self.settings.get('RESOLUTION'))
         self.clock = pg.time.Clock()
         self.running = True
+        
         self.scenes = {
             MENU_SCENE: MenuScene(self),
             GAME_SCENE: GameScene(self),
@@ -29,6 +32,7 @@ class Game:
             return
         
         if scene_name == QUIT:
+            self.settings.save_settings()
             self.running = False
             return
         

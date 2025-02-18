@@ -19,6 +19,7 @@ class Settings:
         self.settings = DEFAULT_SETTINGS.copy()
         self.load_settings()
 
+
     def load_settings(self):
         '''Wczytuje ustawienia z pliku, jeśli istnieje. W przeciwnym przypadku zostaje przy domyślnych.'''
         if os.path.exists(self.filename):
@@ -27,6 +28,8 @@ class Settings:
                     self.settings.update(json.load(file))
             except json.JSONDecodeError:
                 print('Błąd odczytu pliku z ustawieniami, używam domyślnych.')
+
+        print(self.settings)
 
 
     def save_settings(self):
