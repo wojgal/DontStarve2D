@@ -2,9 +2,7 @@ import pygame as pg
 from systems.inventory import Inventory
 from constants.tiles import TILE_SIZE
 from constants.controls import INPUT_MAPPING
-from constants.player import PLAYER_HEALTH, PLAYER_SPEED
-from utils.animation import Animation
-from utils.textures_utils import get_sprites
+from constants.player import PLAYER_HEALTH, PLAYER_SPEED, ANIMATIONS
 
 from constants import colors
 
@@ -23,28 +21,7 @@ class Player(pg.sprite.Sprite):
         self.state = 'idle'
         self.direction = 'right'
 
-        self.animations = {
-            'idle': {
-                'down': Animation(get_sprites('player', 'idle_down'), frame_duration=175),
-                'right': Animation(get_sprites('player', 'idle_right'), frame_duration=175),
-                'up': Animation(get_sprites('player', 'idle_up'), frame_duration=175),
-                'left': Animation(get_sprites('player', 'idle_left'), frame_duration=175)             
-            },
-            
-            'move': {
-                'down': Animation(get_sprites('player', 'move_down'), frame_duration=125),
-                'right': Animation(get_sprites('player', 'move_right'), frame_duration=125),
-                'up': Animation(get_sprites('player', 'move_up'), frame_duration=125),
-                'left': Animation(get_sprites('player', 'move_left'), frame_duration=125)
-            },
-
-            'attack': {
-                'down': Animation(get_sprites('player', 'attack_down'), frame_duration=125),
-                'right': Animation(get_sprites('player', 'attack_right'), frame_duration=125),
-                'up': Animation(get_sprites('player', 'attack_up'), frame_duration=125),
-                'left': Animation(get_sprites('player', 'attack_left'), frame_duration=125),
-            }
-        }
+        self.animations = ANIMATIONS
 
         self.image = self.animations[self.state][self.direction].get_current_frame()
         self.rect = self.image.get_rect(topleft=(x * TILE_SIZE, y * TILE_SIZE))
@@ -170,6 +147,7 @@ class Player(pg.sprite.Sprite):
         '''Obsluguje atak gracza'''
         if any(keys[key] for key in INPUT_MAPPING['attack']):
             self.action_timer = self.animations['attack'][self.direction].get_timer()
+            self.audio_manager.play_sfx('attack')
 
             object = self.get_facing_object()
 
@@ -206,6 +184,11 @@ class Player(pg.sprite.Sprite):
 
                 if event.key in INPUT_MAPPING['inventory']:
                     self.inventory.toggle_open()
+
+                    if self.inventory.is_open:
+                        self.audio_manager.play_sfx('inventory_open')
+                    else:
+                        self.audio_manager.play_sfx('inventory_close')
 
         if not self.inventory.is_open:
             self.handle_input(keys)

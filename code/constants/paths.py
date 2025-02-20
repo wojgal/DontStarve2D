@@ -38,8 +38,10 @@ MUSIC_PATHS = {
 }
 
 SFX_PATHS = {
-    'attack_sword': 'assets/sfx/attack_sword.wav',
+    'attack': 'assets/sfx/attack_sword.wav',
     'walk': 'assets/sfx/walk.wav',
+    'inventory_open': 'assets/sfx/inventory_open.wav',
+    'inventory_close': 'assets/sfx/inventory_close.wav',
 }
 
 

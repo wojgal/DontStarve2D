@@ -24,6 +24,7 @@ class Tree(pg.sprite.Sprite):
             self.health -= 1
 
             if self.health <= 0:
+                print(self.drop.amount)
                 return 'destroy', self.drop
             
         return None, None

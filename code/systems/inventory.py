@@ -19,12 +19,27 @@ class Inventory:
 
     def add_item(self, new_item):
         for item in self.items:
-            if item == new_item:
+            if item != new_item:
+                continue
+
+            item_capacity = item.get_capacity()
+
+            if item_capacity == 0:
+                continue
+
+            if new_item.amount > item_capacity:
+                item.amount += item_capacity
+                new_item.amount -= item_capacity
+            else:
                 item.amount += new_item.amount
+                new_item.amount = 0
+            
+            if new_item.amount == 0:
+                break
 
         else:
-            free_lost_idx = self.items.index(None)
-            self.items[free_lost_idx] = new_item
+            free_slot_idx = self.items.index(None)
+            self.items[free_slot_idx] = new_item
 
 
     def toggle_open(self):
@@ -43,8 +58,9 @@ class Inventory:
                 if item == None:
                     continue
                 
-                x_cord = self.start_x + (idx % self.width) * (self.slot_size + 8)
-                y_cord = self.start_y + (idx // self.height) * (self.slot_size + 8)
-                screen.blit(item.image, (x_cord, y_cord))
+                x = self.start_x + (idx % self.width) * (self.slot_size + 8)
+                y = self.start_y + (idx // self.height) * (self.slot_size + 8)
+                
+                item.draw(screen, x, y)
 
     
