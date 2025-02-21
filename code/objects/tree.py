@@ -1,5 +1,6 @@
 import pygame as pg
 from items.wood import Wood
+from systems.audio import AudioManager
 from random import randint
 from constants.tiles import TILE_SIZE
 from utils.textures_utils import get_texture
@@ -17,6 +18,8 @@ class Tree(pg.sprite.Sprite):
         self.interactable = True
         self.health = 3
         self.drop = Wood(randint(1, 3))
+
+        #self.audio_manager = AudioManager()
         
 
     def interact(self):

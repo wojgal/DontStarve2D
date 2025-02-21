@@ -1,4 +1,5 @@
 import pygame as pg
+from systems.audio import AUDIO_MANAGER
 from utils.textures_utils import get_texture
 
 class Inventory:
@@ -16,34 +17,32 @@ class Inventory:
         self.image = get_texture('inventory', size=(600, 600))
         self.rect = self.image.get_rect(topleft=(660, 240))
 
+        self.audio_manager = AUDIO_MANAGER
 
     def add_item(self, new_item):
         for item in self.items:
-            if item != new_item:
-                continue
+            if item == new_item and (capacity := item.get_capacity()) > 0:
+                transfer_amount = min(new_item.amount, capacity)
+                item.amount += transfer_amount
+                new_item.amount -= transfer_amount
 
-            item_capacity = item.get_capacity()
-
-            if item_capacity == 0:
-                continue
-
-            if new_item.amount > item_capacity:
-                item.amount += item_capacity
-                new_item.amount -= item_capacity
-            else:
-                item.amount += new_item.amount
-                new_item.amount = 0
-            
-            if new_item.amount == 0:
-                break
-
-        else:
-            free_slot_idx = self.items.index(None)
-            self.items[free_slot_idx] = new_item
+                if new_item.amount == 0:
+                    return
+                
+        try:
+            free_slot = self.items.index(None)
+            self.items[free_slot] = new_item
+        except ValueError:
+            pass
 
 
     def toggle_open(self):
         self.is_open = not self.is_open
+
+        if self.is_open:
+            self.audio_manager.play_sfx('inventory_open')
+        else:
+            self.audio_manager.play_sfx('inventory_close')
 
 
     def update(self):

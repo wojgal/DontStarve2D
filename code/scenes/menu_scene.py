@@ -1,4 +1,5 @@
 import pygame as pg
+from systems.audio import AUDIO_MANAGER
 from constants.colors import BLACK, WHITE, RED
 from constants.scenes import GAME_SCENE, QUIT, SETTINGS_SCENE
 from ui.text import draw_text
@@ -6,7 +7,7 @@ from ui.text import draw_text
 class MenuScene:
     def __init__(self, game):
         self.game = game
-        self.audio_manager = game.audio_manager
+        self.audio_manager = AUDIO_MANAGER
         self.audio_manager.play_music('music')
 
         # Opcje, (nazwa, scena)
@@ -36,6 +37,7 @@ class MenuScene:
                 elif event.key == pg.K_RETURN or event.key == pg.K_SPACE:
                     option_name, option_scene = self.options[self.selected_option]
                     self.game.change_scene(option_scene)
+                    self.selected_option = 0
 
 
     def update(self, dt):

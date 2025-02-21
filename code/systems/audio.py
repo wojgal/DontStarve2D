@@ -1,12 +1,25 @@
 import pygame as pg
 from constants.paths import MUSIC_PATHS, SFX_PATHS
 
-class AudioManager:
-    def __init__(self):
-        pg.mixer.init()
-        self.sfx = {}
 
-        self.fade_ms = 1000
+class AudioManager:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(AudioManager, cls).__new__(cls)
+            cls._instance._initialized = False
+
+        return cls._instance
+    
+
+    def __init__(self):
+        if not self._initialized:
+            pg.mixer.init()
+            self.sfx = {}
+            self.fade_ms = 1000
+            self.in_de_step = 0.05
+            self._initialized = True
 
     
     def load_settings(self, settings):
@@ -49,6 +62,25 @@ class AudioManager:
             pg.mixer.music.pause()
 
         return self.music_enabled
+    
+
+    def increase_music_volume(self):
+        self.music_volume = min(1.0, self.music_volume + self.in_de_step)
+        pg.mixer.music.set_volume(self.music_volume)
+
+        return round(self.music_volume, 2)
+
+
+    def decrease_music_volume(self):
+        self.music_volume = max(0.0, self.music_volume - self.in_de_step)
+        pg.mixer.music.set_volume(self.music_volume)
+
+        return round(self.music_volume, 2)
+
+
+    # def set_music_volume(self, volume):
+    #     self.music_volume = volume
+    #     pg.mixer.music.set_volume(self.music_volume)
 
 
     def play_sfx(self, sfx_name):
@@ -67,15 +99,31 @@ class AudioManager:
         self.sfx_enabled = not self.sfx_enabled
 
         return self.sfx_enabled
+    
 
+    def increase_sfx_volume(self):
+        self.sfx_volume = min(1.0, self.sfx_volume + self.in_de_step)
 
-    def set_music_volume(self, volume):
-        self.music_volume = volume
-        pg.mixer.music.set_volume(self.music_volume)
-
-
-    def set_sfx_volume(self, volume):
-        self.sfx_volume = volume
-
-        for sfx in self.sfx:
+        for sfx in self.sfx.values():
             sfx.set_volume(self.sfx_volume)
+
+        return round(self.sfx_volume, 2)
+
+
+    def decrease_sfx_volume(self):
+        self.sfx_volume = max(0.0, self.sfx_volume - self.in_de_step)
+
+        for sfx in self.sfx.values():
+            sfx.set_volume(self.sfx_volume)
+
+        return round(self.sfx_volume, 2)
+
+
+    # def set_sfx_volume(self, volume):
+    #     self.sfx_volume = volume
+
+    #     for sfx in self.sfx:
+    #         sfx.set_volume(self.sfx_volume)
+
+
+AUDIO_MANAGER = AudioManager()

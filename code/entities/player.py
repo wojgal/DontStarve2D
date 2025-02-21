@@ -1,17 +1,19 @@
 import pygame as pg
 from systems.inventory import Inventory
+from systems.audio import AUDIO_MANAGER
+from systems.settings import SETTINGS
 from constants.tiles import TILE_SIZE
 from constants.controls import INPUT_MAPPING
-from constants.player import PLAYER_HEALTH, PLAYER_SPEED, ANIMATIONS
+from constants.player import PLAYER_HEALTH, PLAYER_SPEED, PLAYER_ANIMATIONS
 
-from constants import colors
 
 class Player(pg.sprite.Sprite):
     def __init__(self, x, y, world):
         super().__init__()
 
         self.world = world
-        self.audio_manager = world.audio_manager
+        self.audio_manager = AUDIO_MANAGER
+        self.settings = SETTINGS
         self.camera = None
         self.inventory = Inventory()
 
@@ -21,16 +23,18 @@ class Player(pg.sprite.Sprite):
         self.state = 'idle'
         self.direction = 'right'
 
-        self.animations = ANIMATIONS
+        self.animations = PLAYER_ANIMATIONS
 
         self.image = self.animations[self.state][self.direction].get_current_frame()
         self.rect = self.image.get_rect(topleft=(x * TILE_SIZE, y * TILE_SIZE))
 
+        # TUTAJ TO POTEM ZMIENIC ZEBY LICZYLO SIE DYNAMICZNIE
+        self.player_screen_x = self.settings.get('SCREEN_WIDTH') // 2 - TILE_SIZE // 2
+        self.player_screen_y = self.settings.get('SCREEN_HEIGHT') // 2 - TILE_SIZE // 2
+
+
     def set_cammera(self, camera):
         self.camera = camera
-
-    def set_audio_manager(self, audio_manager):
-        self.audio_manager = audio_manager
 
 
     def check_move_on_tiles(self, tiles_cords):
@@ -185,11 +189,6 @@ class Player(pg.sprite.Sprite):
                 if event.key in INPUT_MAPPING['inventory']:
                     self.inventory.toggle_open()
 
-                    if self.inventory.is_open:
-                        self.audio_manager.play_sfx('inventory_open')
-                    else:
-                        self.audio_manager.play_sfx('inventory_close')
-
         if not self.inventory.is_open:
             self.handle_input(keys)
 
@@ -224,9 +223,7 @@ class Player(pg.sprite.Sprite):
 
     def draw(self, screen):
         self.draw_facing_tile(screen)
-        player_screen_x = 1920 // 2 - TILE_SIZE // 2
-        player_screen_y = 1080 // 2 - TILE_SIZE // 2
-        screen.blit(self.image, (player_screen_x, player_screen_y))
+        screen.blit(self.image, (self.player_screen_x, self.player_screen_y))
         self.inventory.draw(screen)
 
 

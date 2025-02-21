@@ -3,9 +3,8 @@ import os
 
 # Domyślne ustawienia gry
 DEFAULT_SETTINGS = {
-    'SCREEN_WIDTH': 1920,
-    'SCREEN_HEIGHT': 1080,
     'RESOLUTION': (1920, 1080),
+    'FULLSCREEN': False,
     'FPS': 60,
     'MUSIC_ENABLED': True,
     'MUSIC_VOLUME': 0.5,
@@ -14,10 +13,23 @@ DEFAULT_SETTINGS = {
 }
 
 class Settings:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Settings, cls).__new__(cls)
+            cls._instance._initialized = False
+
+        return cls._instance
+    
+
     def __init__(self, filename='settings.json'):
-        self.filename = filename
-        self.settings = DEFAULT_SETTINGS.copy()
-        self.load_settings()
+        if not self._initialized:
+            self.filename = filename
+            self.settings = DEFAULT_SETTINGS.copy()
+            self.load_settings()
+
+            self._initialized = True
 
 
     def load_settings(self):
@@ -46,3 +58,6 @@ class Settings:
     def set(self, key, value):
         '''Ustawia wartość ustawienia o podanej nazwie.'''
         self.settings[key] = value
+
+
+SETTINGS = Settings()

@@ -1,21 +1,25 @@
 import pygame as pg
-from settings import Settings
+from systems.window import WINDOW_MANAGER
+from systems.settings import SETTINGS
 from scenes.menu_scene import MenuScene
 from scenes.game_scene import GameScene
 from scenes.settings_scene import SettingsScene
-from systems.audio import AudioManager
+from systems.audio import AUDIO_MANAGER
 from constants.scenes import GAME_SCENE, MENU_SCENE, QUIT, SETTINGS_SCENE
 
 class Game:
     def __init__(self):
         pg.init()
-        self.settings = Settings()
-
-        self.audio_manager = AudioManager()
+        
+        self.settings = SETTINGS
+        self.audio_manager = AUDIO_MANAGER
         self.audio_manager.load_settings(self.settings)
 
-        self.screen = pg.display.set_mode(self.settings.get('RESOLUTION'))
+        self.window = WINDOW_MANAGER
+        self.window.load_settings(self.settings)
+
         self.clock = pg.time.Clock()
+        self.fps = self.settings.get('FPS')
         self.running = True
         
         self.scenes = {
@@ -45,7 +49,7 @@ class Game:
 
     def run(self):
         while self.running:
-            dt = self.clock.tick(self.settings.get('FPS'))
+            dt = self.clock.tick(self.fps)
             events = pg.event.get()
 
             for event in events:
@@ -54,7 +58,7 @@ class Game:
                     
             self.current_scene.handle_events(events)
             self.current_scene.update(dt)
-            self.current_scene.draw(self.screen)
+            self.current_scene.draw(self.window.screen)
 
             pg.display.update()
 

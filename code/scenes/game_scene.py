@@ -2,6 +2,7 @@ import pygame as pg
 from world.world import World
 from entities.player import Player
 from systems.camera import Camera
+from systems.audio import AUDIO_MANAGER
 from constants import colors
 from constants.world import WORLD_SIZE
 from constants.scenes import MENU_SCENE
@@ -9,7 +10,7 @@ from constants.scenes import MENU_SCENE
 class GameScene:
     def __init__(self, game):
         self.game = game
-        self.audio_manager = game.audio_manager
+        self.audio_manager = AUDIO_MANAGER
 
         self.world = World(self.audio_manager)
         self.player = Player(WORLD_SIZE // 2, WORLD_SIZE // 2, self.world)

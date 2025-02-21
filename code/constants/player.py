@@ -2,9 +2,9 @@ from utils.animation import Animation
 from utils.textures_utils import get_sprites
 
 PLAYER_SPEED = 4
-PLAYER_HEALTH = 10
+PLAYER_HEALTH = 100
 
-ANIMATIONS = {
+PLAYER_ANIMATIONS = {
     'idle': {
         'down': Animation(get_sprites('player', 'idle_down'), frame_duration=175),
         'right': Animation(get_sprites('player', 'idle_right'), frame_duration=175),
